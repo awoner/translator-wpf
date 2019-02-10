@@ -1,0 +1,29 @@
+﻿<Window x:Class="Translator_desktop.Pages.ConTableWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Translator_desktop.Pages"
+        mc:Ignorable="d"
+        Title="Table of constants"
+        Height="300" 
+        Width="275" 
+        MinWidth="275"
+        MaxWidth="275"
+        Background="#424242" 
+        MinHeight="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <ListView x:Name="conTable" Margin="10px" Loaded="conTable_Loaded">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn DisplayMemberBinding="{Binding Code}" Header="№" Width="30px"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Name" Width="100px"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Type}" Header="Type" Width="100px"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</Window>

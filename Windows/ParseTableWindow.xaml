@@ -1,0 +1,27 @@
+﻿<Window x:Class="Translator_desktop.Windows.ParseTableWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Translator_desktop.Windows"
+        mc:Ignorable="d"
+        Title="Parse table"
+        Height="500" 
+        Width="310" 
+        MinWidth="310"
+        MaxWidth="310"
+        Background="#424242" 
+        MinHeight="500"
+        Loaded="Window_Loaded">
+    <Grid>
+        <ListView x:Name="parseTable" Margin="10px" Loaded="parseTable_Loaded">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn DisplayMemberBinding="{Binding InputToken}" Header="Input token" Width="80px"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding State}" Header="State" Width="40px"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding StackState}" Header="Stack of states" Width="130px"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</Window>

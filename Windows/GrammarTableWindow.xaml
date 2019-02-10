@@ -1,0 +1,27 @@
+﻿<Window x:Class="Translator_desktop.Windows.GrammarTableWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Translator_desktop.Windows"
+        mc:Ignorable="d"
+        Title="Grammar table"
+        Height="500" 
+        Width="350" 
+        MinWidth="310"
+        MaxWidth="350"
+        Background="#424242" 
+        MinHeight="500"
+        Loaded="Window_Loaded">
+    <Grid>
+        <ListView x:Name="grammarTable" Margin="10px">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn DisplayMemberBinding="{Binding LeftPart}" Header="Left part" Width="80px"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Equal}" Header="Equal" Width="40px"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding RightPart}" Header="Right Parts" Width="180px"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</Window>

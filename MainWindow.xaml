@@ -1,0 +1,108 @@
+﻿<Window x:Class="Translator_desktop.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Translator_desktop"
+        mc:Ignorable="d"
+        Title="Translator Desktop" Height="550" Width="800" Background="#424242" MinHeight="550" MinWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"></RowDefinition>
+            <RowDefinition Height="1*"></RowDefinition>
+            <RowDefinition Height="15*"></RowDefinition>
+            <RowDefinition Height="1.2*"></RowDefinition>
+            <RowDefinition Height="5*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="19*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <Menu VerticalAlignment="Stretch"
+              HorizontalAlignment="Stretch"
+              BorderThickness="0"
+              Background="#6d6d6d"
+              Foreground="#ffffff"
+              Grid.ColumnSpan="2">
+            <MenuItem Header="File" Background="#6d6d6d" Foreground="#ffffff" BorderThickness="0">
+                <MenuItem Header="Open" BorderThickness="0" Click="openFile_Click" Background="#6d6d6d" Foreground="#ffffff" x:Name="openFile"/>
+                <MenuItem Header="Save" BorderThickness="0" Click="saveFile_Click" Background="#6d6d6d" Foreground="#ffffff" x:Name="saveFile"/>
+                <MenuItem Header="Exit" BorderThickness="0" Click="exitFile_Click" Background="#6d6d6d" Foreground="#ffffff" x:Name="exitFile" />
+            </MenuItem>
+            <MenuItem Header="View" Background="#6d6d6d" BorderThickness="0" Foreground="#ffffff">
+                <MenuItem Header="Show tabels" BorderThickness="0" Background="#6d6d6d" Foreground="#ffffff" x:Name="showTables">
+                    <MenuItem Header="Output tokens table" BorderThickness="0" Click="outputTokenTablePage_Click" Background="#6d6d6d" Foreground="#ffffff" x:Name="outputTokenTablePage"/>
+                    <MenuItem Header="Identifiers Table" BorderThickness="0" Click="idnTablePage_Click" Background="#6d6d6d" Foreground="#ffffff" x:Name="idnTablePage" />
+                    <MenuItem Header="Constants table" BorderThickness="0" Click="conTablePage_Click" Background="#6d6d6d" Foreground="#ffffff" x:Name="conTablePage" />
+                    <MenuItem Header="Parse table" BorderThickness="0" Click="parseTablePage_Click"  Background="#6d6d6d" Foreground="#ffffff" x:Name="parseTablePage" />
+                    <MenuItem Header="Grammar" BorderThickness="0" Click="grammarTable_Click"  Background="#6d6d6d" Foreground="#ffffff" x:Name="grammarTable" />
+                    <MenuItem Header="Relationships table" BorderThickness="0" Click="relationshipsTable_Click"  Background="#6d6d6d" Foreground="#ffffff" x:Name="relationshipsTable" />
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Settings" Background="#6d6d6d" BorderThickness="0" Foreground="#ffffff">
+                <MenuItem Header="Syntax analyze type" BorderThickness="0" Click="syntaxSettings_Click"  Background="#6d6d6d" Foreground="#ffffff" x:Name="syntaxSettings" />
+            </MenuItem>
+        </Menu>
+
+        <Button Content="Start"
+                Width="150px"
+                Grid.Row="1"
+                Background="#03B846"
+                Foreground="#ffffff"
+                BorderThickness="0"
+                Click="Button_Click"
+                Grid.ColumnSpan="2"></Button>
+
+        <RichTextBox
+                 HorizontalAlignment="Stretch" 
+                 VerticalAlignment="Stretch" 
+                 Padding="5px"
+                 Grid.Row="2" 
+                 Background="#1b1b1b"
+                 Foreground="#ffffff"
+                 BorderThickness="0"
+                 x:Name="programCode"
+                 Block.LineHeight="1"
+                 Grid.Column="0"            
+            Grid.ColumnSpan="2"
+                 >
+            <RichTextBox.InputBindings>
+                <KeyBinding Key="Enter" Command="{Binding programCode_KeyDown}"/>
+            </RichTextBox.InputBindings>
+        </RichTextBox>
+
+        <Label Grid.Row="3" Foreground="White" Margin="20 0 0 0" Grid.ColumnSpan="2">Errors:</Label>
+
+        <ListBox HorizontalAlignment="Stretch"
+                  Grid.Row="4"
+                  VerticalAlignment="Stretch"
+                  Background="#1b1b1b"
+                  Foreground="Red"
+                  x:Name="listViewErrors"
+                  Grid.ColumnSpan="2">
+        </ListBox>
+
+        <!--<avalonEdit:TextEditor
+            xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+            FontFamily="Consolas"
+            FontSize="10pt"
+            Grid.Row="2"
+            x:Name="rowNums"
+            Background="#1b1b1b"
+            Foreground="#228751"/>-->
+        <!--<RichTextBox Grid.Row="2"
+                 VerticalAlignment="Stretch" 
+                 HorizontalAlignment="Stretch"
+                 x:Name="rowNums"
+                 Background="#1b1b1b"
+                 Foreground="#228751"
+                 IsReadOnly="False"
+                 Padding="5px"
+                 Block.LineHeight="1"
+                 BorderThickness="0 0 3 0"
+                 Loaded="rowNums_Loaded"></RichTextBox>-->
+    </Grid>
+
+</Window>
