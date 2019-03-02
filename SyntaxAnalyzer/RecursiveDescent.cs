@@ -15,7 +15,7 @@ namespace Translator_desktop.SyntaxAnalyser
         public RecursiveDescent()
         {
             errors = new List<string>();
-            outputTokens = OutputTokenTable.GetTable();
+            outputTokens = OutputTokenTable.Table;
         }
 
         public IList<string> GetErrors()

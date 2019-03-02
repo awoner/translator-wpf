@@ -15,10 +15,10 @@ namespace Translator_desktop.SyntaxAnalyzer
 {
     public class Analyzer
     {
-        private static List<State> conversionTable;           //таблица переходов
-        private static IList<Token> outputTokenTable;         //выходная таблица лексем
-        private static Stack<int?> stackState;                //стек состояний
-        private static List<Row> parseTable;                  //таблица разбора
+        private static List<State> conversionTable;
+        private static IList<Token> outputTokenTable;
+        private static Stack<int?> stackState;
+        private static List<Row> parseTable;
 
         public static List<Row> GetTable()
         {
@@ -28,13 +28,14 @@ namespace Translator_desktop.SyntaxAnalyzer
         public Analyzer()
         {
             conversionTable = new List<State>();
-            outputTokenTable = OutputTokenTable.GetTable();
+            outputTokenTable = OutputTokenTable.Table;
             stackState = new Stack<int?>();
             parseTable = new List<Row>();
 
             try
             {
-                string path = @"C:\Users\lesha\source\repos\Translator_desktop\Translator_desktop\SyntaxAnalyzer\ConversionTable.json";
+                string projectRoot = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
+                string path = Directory.GetFiles(projectRoot, "ConversionTable.json", SearchOption.AllDirectories).FirstOrDefault();
 
                 using (StreamReader file = File.OpenText(path))
                 {
@@ -76,8 +77,11 @@ namespace Translator_desktop.SyntaxAnalyzer
             {
                 if (i <= outputTokenTable.Count)
                 {
-                    stateConversions = conversionTable.FindAll(s => s.CurrentState == current_state);     //все переходы которые можно выполнить из текущего состояния
-                    currentConversion = stateConversions.FirstOrDefault(x => x.Label == (i < outputTokenTable.Count ? GetLabelOfToken(outputTokenTable[i].Name) : ""));  //переход для текущей лексемы
+                    //all transitions that can be performed from the current state
+                    stateConversions = conversionTable.FindAll(s => s.CurrentState == current_state);
+
+                    //jump to the current token
+                    currentConversion = stateConversions.FirstOrDefault(x => x.Label == (i < outputTokenTable.Count ? GetLabelOfToken(outputTokenTable[i].Name) : ""));
 
                     if (stateConversions.First().SemanticSubroutine.Contains("[=]exit"))
                     {
@@ -91,15 +95,23 @@ namespace Translator_desktop.SyntaxAnalyzer
                             MessageBox.Show("Build successfully.");
                         }
                     }
-                    else if (currentConversion != null)  //если переход возможен, то
+                    //else if transfer is possible
+                    else if (currentConversion != null)
                     {
                         if (currentConversion.StateStack != null)
                         {
-                            stackState.Push(currentConversion.StateStack);  //заносим в стек
+                            //put on the stack
+                            stackState.Push(currentConversion.StateStack);
                         }
-                        parseTable.Add(new Row { State = current_state, InputToken = outputTokenTable[i].Name, StackState = string.Join(",", stackState)});  //добавляеться запись в таблицу разбора
-                        current_state = currentConversion.NextState ?? (int)(stackState?.Pop());    //текущему состоянию присваиваеться следуюющее состояние за текущим переходом
-                        i++;    //переход на следующую лексему
+
+                        //adds an entry to the parse table
+                        parseTable.Add(new Row { State = current_state, InputToken = outputTokenTable[i].Name, StackState = string.Join(",", stackState)});
+
+                        //the current state is assigned the following state after the current transition
+                        current_state = currentConversion.NextState ?? (int)(stackState?.Pop());
+
+                        //move to the next token
+                        i++;
                     }
                     else
                     {

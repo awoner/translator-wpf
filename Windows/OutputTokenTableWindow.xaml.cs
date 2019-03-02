@@ -27,7 +27,7 @@ namespace Translator_desktop.Windows
 
         private void outputTokenTable_Loaded(object sender, RoutedEventArgs e)
         {
-            outputTokenTable.ItemsSource = OutputTokenTable.GetTable();
+            outputTokenTable.ItemsSource = OutputTokenTable.Table;
         }
     }
 }

@@ -27,7 +27,7 @@ namespace Translator_desktop.Windows
 
         private void idnTable_Loaded(object sender, RoutedEventArgs e)
         {
-            idnTable.ItemsSource = IdnTable.GetTable();
+            idnTable.ItemsSource = IdnTable.Table;
         }
     }
 }

@@ -27,7 +27,7 @@ namespace Translator_desktop.Pages
 
         private void conTable_Loaded(object sender, RoutedEventArgs e)
         {
-            conTable.ItemsSource = ConTable.GetTable();
+            conTable.ItemsSource = ConTable.Table;
         }
     }
 }

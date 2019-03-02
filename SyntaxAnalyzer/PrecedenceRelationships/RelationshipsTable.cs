@@ -15,6 +15,7 @@ namespace Translator_desktop.SyntaxAnalyzer.PrecedenceRelationships
     {
         public ICollection<Rule> Grammar { get; set; }
         public static List<RelationshipToken> relationshipsTable;
+        public static List<RelationshipToken> Table { get => relationshipsTable; }
         public static List<RuleBuffer> SimpleGrammar { get; set; }
 
         public RelationshipsTable()
@@ -24,8 +25,8 @@ namespace Translator_desktop.SyntaxAnalyzer.PrecedenceRelationships
                 Grammar = new List<Rule>();
                 relationshipsTable = new List<RelationshipToken>();
 
-                //string path = @"C:\Users\lesha\source\repos\Translator_desktop\Translator_desktop\SyntaxAnalyzer\PrecedenceRelationships\Grammar.json";
-                string path = @"C:\Users\lesha\source\repos\Translator_desktop\Translator_desktop\SyntaxAnalyzer\PrecedenceRelationships\StratifiedGrammar.json";
+                string projectRoot = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
+                string path = Directory.GetFiles(projectRoot, "StratifiedGrammar.json", SearchOption.AllDirectories).FirstOrDefault();
 
                 using (StreamReader file = File.OpenText(path))
                 {
@@ -40,14 +41,10 @@ namespace Translator_desktop.SyntaxAnalyzer.PrecedenceRelationships
             }
         }
 
-        public List<RelationshipToken> GetRelationshipsTable()
-        {
-            return relationshipsTable;
-        }
-
         private void ParseGrammar(StreamReader sr)
         {
-            List<RuleBuffer> rules = (List<RuleBuffer>)new JsonSerializer().Deserialize(sr, typeof(List<RuleBuffer>));  //parsing rules from json
+            //parsing rules from json
+            List<RuleBuffer> rules = (List<RuleBuffer>)new JsonSerializer().Deserialize(sr, typeof(List<RuleBuffer>));
 
             SimpleGrammar = rules;
 
@@ -55,20 +52,25 @@ namespace Translator_desktop.SyntaxAnalyzer.PrecedenceRelationships
             {
                 var newRule = new Rule();
 
-                newRule.LeftPart = new LinguisticUnit { Name = rule.LeftPart.Trim(), Type = LinguisticUnitType.NonTerminal }; //set left part of json like a non terminal
+                //set left part of json like a non terminal
+                newRule.LeftPart = new LinguisticUnit { Name = rule.LeftPart.Trim(), Type = LinguisticUnitType.NonTerminal };
 
-                string[] rightParts = rule.RightPart.Split(new string[] { "|" }, StringSplitOptions.RemoveEmptyEntries); //get all right parts
+                //get all right parts
+                string[] rightParts = rule.RightPart.Split(new string[] { "|" }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (string rightPart in rightParts)
                 {
                     var newRightPart = new RightPart();
 
-                    string[] linguisticUnits = rightPart.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries); //get all linguistic units from right part of rule
+                    //get all linguistic units from right part of rule
+                    string[] linguisticUnits = rightPart.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
                     foreach (string linguisticUnit in linguisticUnits)
                     {
                         newRightPart.LinguisticUnits.Add(new LinguisticUnit
                         {
                             Name = linguisticUnit,
-                            Type = new Regex(@"^<.+>$").IsMatch(linguisticUnit) ? LinguisticUnitType.NonTerminal : LinguisticUnitType.Terminal //define linguistic unit as terminal or non terminal by reg. exp.
+
+                            //define linguistic unit as terminal or non terminal by reg. exp.
+                            Type = new Regex(@"^<.+>$").IsMatch(linguisticUnit) ? LinguisticUnitType.NonTerminal : LinguisticUnitType.Terminal
                         });
                     }
                     newRule.RightParts.Add(newRightPart);
@@ -171,8 +173,7 @@ namespace Translator_desktop.SyntaxAnalyzer.PrecedenceRelationships
 
                             relationshipsTable.Add(equalRelation);
 
-                            if (
-                                 equalRelation.SecondLinguisticUnit.Type == LinguisticUnitType.NonTerminal) //TODO: create static method IsSecondNonTerminal in RelationshipToken
+                            if (equalRelation.SecondLinguisticUnit.Type == LinguisticUnitType.NonTerminal)
                             {
                                 var firstPlus = GetFirstPlus(equalRelation.SecondLinguisticUnit);
 
@@ -187,8 +188,7 @@ namespace Translator_desktop.SyntaxAnalyzer.PrecedenceRelationships
                                     relationshipsTable.Add(lowerRelation);
                                 }
                             }
-                            if (equalRelation.FirstLinguisticUnit.Type == LinguisticUnitType.NonTerminal //TODO: create static method IsFirstNonTerminal in RelationshipToken
-                              )
+                            if (equalRelation.FirstLinguisticUnit.Type == LinguisticUnitType.NonTerminal)
                             {
                                 var lastPlus = GetLastPlus(equalRelation.FirstLinguisticUnit);
 
@@ -203,7 +203,7 @@ namespace Translator_desktop.SyntaxAnalyzer.PrecedenceRelationships
                                     relationshipsTable.Add(higherRelation);
                                 }
                             }
-                            if (equalRelation.FirstLinguisticUnit.Type == LinguisticUnitType.NonTerminal //TODO: create static method IsBothNonTerminal in RelationshipToken
+                            if (equalRelation.FirstLinguisticUnit.Type == LinguisticUnitType.NonTerminal
                               && equalRelation.SecondLinguisticUnit.Type == LinguisticUnitType.NonTerminal)
                             {
                                 var lastPlus = GetLastPlus(equalRelation.FirstLinguisticUnit);
@@ -252,7 +252,7 @@ namespace Translator_desktop.SyntaxAnalyzer.PrecedenceRelationships
                 }
             }
 
-            string str = "";
+            string str = string.Empty;
             foreach (var conflict in conflicts)
             {
                 str += $"|\t{conflict.Key.FirstLinguisticUnit.Name}\t[ {conflict.Key.Relationship} ]\t{conflict.Key.SecondLinguisticUnit.Name}\t|";

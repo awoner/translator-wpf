@@ -6,7 +6,7 @@
   {"LeftPart": "<type>", "RightPart": "int | float | double"},
   {"LeftPart": "<op.list>", "RightPart": "<op.list> <op.> ; | <op.> ;"},
   {"LeftPart": "<op.>", "RightPart": "<loop> | <cond.> | <assign.> | <input> | <output>"},
-  {"LeftPart": "<loop>", "RightPart": "for ( id = <E1> <RL> <E1> ) <op.bl.>"},
+  {"LeftPart": "<loop>", "RightPart": "for ( id = <E1> ; <RL> ; <E1> ) <op.bl.>"},
   {"LeftPart": "<cond.>", "RightPart": "if ( <RL> ) <op.bl.>"},
   {"LeftPart": "<op.bl.>", "RightPart": "{ <op.list1> } | <op.> ;"},
   {"LeftPart": "<input>", "RightPart": "cin << id | <input> << id"},
@@ -21,5 +21,6 @@
   {"LeftPart": "<dec.list1>", "RightPart": "<dec.list>"},
   {"LeftPart": "<var.list1>", "RightPart": "<var.list>"},
   {"LeftPart": "<E1>", "RightPart": "<E>"},
-  {"LeftPart": "<T1>", "RightPart": "<T>"}
+  {"LeftPart": "<T1>", "RightPart": "<T>"},
+  {"LeftPart": "<dec.1>", "RightPart": "<dec.>"}
 ]

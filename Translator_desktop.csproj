@@ -108,7 +108,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="LexicalAnalyzer\Checker.cs" />
+    <Compile Include="Checker.cs" />
     <Compile Include="LexicalAnalyzer\Tables\ConTable.cs" />
     <Compile Include="LexicalAnalyzer\Tables\IdnTable.cs" />
     <Compile Include="MainWindow.xaml.cs">

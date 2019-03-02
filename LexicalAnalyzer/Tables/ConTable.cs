@@ -2,62 +2,68 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Translator_desktop.LexicalAnalyzer.Tables;
 
 namespace Translator_desktop.LexicalAnalyzer.Tables
 {
+    /// <summary>
+    /// The class interprets a table of constants that contains all constants from the source code
+    /// </summary>
     static class ConTable
     {
         private static int code = 1;
         private static IList<Token> conTable;
+        public static IList<Token> Table { get => conTable; }
 
-        public static void Show()
+        /// <summary>
+        /// Return a string representation of the table
+        /// </summary>
+        public static string GetStringTable()
         {
-            Console.WriteLine("\tTable of Constants");
-            Console.WriteLine("-----------------------------------");
-            Console.WriteLine("|   №   |    Name    |    Type    |");
-            Console.WriteLine("-----------------------------------");
+            StringBuilder str = new StringBuilder("\tTable of Constants\n");
+            string separator = new string('-', 35) + '\n';
+
+            str.Append(separator);
+            str.Append("|   №   |    Name    |    Type    |\n");
+            str.Append(separator);
+
             foreach (Token token in conTable)
             {
-                Console.WriteLine("|{0, 4}   |{1, 9}   |{2, 8}    |", token.Code, token.Name, token.Type);
-                Console.WriteLine("-----------------------------------");
+                str.AppendFormat("|{0, 4}   |{1, 9}   |{2, 8}    |\n", token.Code, token.Name, token.Type);
+                str.Append(separator);
             }
+
+            return str.ToString();
         }
 
-        public static IList<Token> GetTable()
-        {
-            return conTable;
-        }
-
+        /// <summary>
+        /// Initialization of tables of constants
+        /// </summary>
         public static void InitTable()
         {
             conTable = new List<Token>();
         }
 
+        /// <summary>
+        /// Get constant code 
+        /// </summary>
         public static int GetCode(string token)
         {
-            foreach (Token con in conTable)
-            {
-                if (con.Name == token)
-                {
-                    return con.Code;
-                }
-            }
+            int? code = conTable.FirstOrDefault(c => c.Name == token)?.Code;
 
-            return 0;
+            return (code != null) ? (int)code : 0;
         }
 
+        /// <summary>
+        /// Сhecks if the table of constants contains the incoming constant
+        /// </summary>
         public static bool Contains(string constant)
         {
-            foreach (Token con in conTable)
-            {
-                if (con.Name == constant)
-                    return true;
-            }
-            return false;
+            return (conTable.FirstOrDefault(c => c.Name == constant) != null) ? true : false;
         }
 
+        /// <summary>
+        /// Add a token in the table
+        /// </summary>
         public static void Add(string token, string type = null)
         {
             if (token.Contains('.') && (token.Contains('e') || token.Contains('E')) && type == null)
