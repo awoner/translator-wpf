@@ -26,7 +26,7 @@
               Background="#6d6d6d"
               Foreground="#ffffff"
               Grid.ColumnSpan="2">
-            <MenuItem Header="File" Background="#6d6d6d" Foreground="#ffffff" BorderThickness="0">
+            <MenuItem Header="File" Background="#6d6d6d" Foreground="#ffffff" BorderThickness="0" BorderBrush="#6d6d6d">
                 <MenuItem Header="Open" BorderThickness="0" Click="openFile_Click" Background="#6d6d6d" Foreground="#ffffff" x:Name="openFile"/>
                 <MenuItem Header="Save" BorderThickness="0" Click="saveFile_Click" Background="#6d6d6d" Foreground="#ffffff" x:Name="saveFile"/>
                 <MenuItem Header="Exit" BorderThickness="0" Click="exitFile_Click" Background="#6d6d6d" Foreground="#ffffff" x:Name="exitFile" />
@@ -39,6 +39,7 @@
                     <MenuItem Header="Parse table" BorderThickness="0" Click="parseTablePage_Click"  Background="#6d6d6d" Foreground="#ffffff" x:Name="parseTablePage" />
                     <MenuItem Header="Grammar" BorderThickness="0" Click="grammarTable_Click"  Background="#6d6d6d" Foreground="#ffffff" x:Name="grammarTable" />
                     <MenuItem Header="Relationships table" BorderThickness="0" Click="relationshipsTable_Click"  Background="#6d6d6d" Foreground="#ffffff" x:Name="relationshipsTable" />
+                    <MenuItem Header="Stack table" BorderThickness="0" Click="StackTable_Click"  Background="#6d6d6d" Foreground="#ffffff" x:Name="stackTable" />
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="Settings" Background="#6d6d6d" BorderThickness="0" Foreground="#ffffff">
@@ -47,12 +48,13 @@
         </Menu>
 
         <Button Content="Start"
+                x:Name="startButton"
                 Width="150px"
                 Grid.Row="1"
                 Background="#03B846"
                 Foreground="#ffffff"
                 BorderThickness="0"
-                Click="Button_Click"
+                Click="StartButton_Click"
                 Grid.ColumnSpan="2"></Button>
 
         <RichTextBox

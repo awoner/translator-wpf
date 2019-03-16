@@ -1,20 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Globalization;
-using System.IO;
+﻿using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using Translator_desktop.SyntaxAnalyzer.PrecedenceRelationships;
+using Translator_desktop.SyntaxAnalyse.OperatorPrecedenceMethod;
 
 namespace Translator_desktop.Windows
 {
@@ -31,56 +20,54 @@ namespace Translator_desktop.Windows
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            var relationships = RelationshipsTable.relationshipsTable;
-            string str = string.Empty;
+            var relationships = RelationshipsTable.relationshipsTableBuffer;
 
+            var dataTable = new DataTable();
+            dataTable.Columns.Add("---", typeof(string));
 
-            for (int i = 0; i < relationships.Count; i++)
+            var columns = relationships.Select(rl => rl.FirstLinguisticUnit.Name).Distinct();
+            var rows = relationships.Select(rl => rl.SecondLinguisticUnit.Name).Distinct();
+
+            foreach (string firstLU in columns)
             {
-                str += $"{relationships[i].FirstLinguisticUnit.Name}\t{relationships[i].Relationship}\t{relationships[i].SecondLinguisticUnit.Name}\n";
-         
+                string newFirstLU = $"[{firstLU}]";
+                dataTable.Columns.Add(newFirstLU, typeof(string));
             }
 
-            File.WriteAllText(@"C:\Users\lesha\Desktop\conflicts.txt", str);
+            foreach (string secondLU in columns)
+            {
+                DataRow row;
+                row = dataTable.NewRow();
 
+                foreach (var column in dataTable.Columns)
+                {
+                    row[column.ToString()] = column.ToString().Equals("---") 
+                        ? secondLU
+                        : relationships.FirstOrDefault(
+                            rl => 
+                                rl.FirstLinguisticUnit.Name.Equals(column.ToString().Replace("[", string.Empty).Replace("]", string.Empty)) 
+                                && rl.SecondLinguisticUnit.Name.Equals(secondLU)
+                          )?.Relationship;
+                }
 
-            
-            //DataTable dataTable = new DataTable();
-            //List<string> relationshipTokens = new List<string>();
-            //dataTable.Columns.Add("---");
-            //foreach (var relation in relationships)
-            //{
-            //    if(!dataTable.Columns.Contains(relation.SecondLinguisticUnit.Name))
-            //        dataTable.Columns.Add(relation.SecondLinguisticUnit.Name.ToString());
-               
-            //}
+                dataTable.Rows.Add(row);
+            }
 
-            ////foreach (var item in relationships)
-            ////{
-            ////    relationshipTokens.Add(item.FirstLinguisticUnit.Name);
-            ////    relationshipTokens.Add(item.Relationship);
-            ////}
-            ////int j = 0;
+            foreach (DataColumn column in dataTable.Columns)
+            {
+                var gridColumn = new DataGridTextColumn()
+                {
+                    Header = column.ColumnName.Replace("[", string.Empty).Replace("]", string.Empty),
+                    Binding = new Binding("[" + column.ColumnName + "]")
+                };
 
-            //for (int j = 0; j < relationships.Count; j++)
-            //{
-            //    var newRow = dataTable.NewRow();
-            //    for (int i = 0; i < dataTable.Columns.Count; i++)
-            //    {
-            //        if(i == 0)
-            //            newRow[dataTable.Columns[i].ColumnName] = relationships[i].FirstLinguisticUnit.Name.ToString();
-            //        newRow[dataTable.Columns[i].ColumnName] = relationships[i].Relationship.ToString();
-            //    }
-            //    dataTable.Rows.Add(newRow);
-            //}
+                rlTable.Columns.Add(gridColumn);
+            }
 
-            ////dataTable.Rows.Add(relationshipTokens);
-            //rlTable.DataContext = dataTable.DefaultView;
-            
-        }
-
-        private void C_dataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
-        {
+            foreach (DataRow row in dataTable.Rows)
+            {
+                rlTable.Items.Add(row);
+            }
         }
     }
 }

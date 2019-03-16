@@ -8,14 +8,11 @@
         Title="RelationshipsTableWindow" Height="450" Width="800"
         Loaded="Window_Loaded">
     <Grid >
-        <DataGrid Name="c_dataGrid"
-          RowHeaderWidth="0"
-          ColumnHeaderHeight="0"
-          AutoGenerateColumns="True"
-          AutoGeneratingColumn="C_dataGrid_AutoGeneratingColumn"/>
-        
-        <!--<DataGrid x:Name="rlTable"  AutoGenerateColumns="True"  ItemsSource="{Binding}">
-            
-        </DataGrid>-->
+        <DataGrid x:Name="rlTable" 
+                  ItemsSource="{Binding}" 
+                  ColumnWidth="70" 
+                  TextBlock.TextAlignment="Center"
+                  AutoGenerateColumns="False">         
+        </DataGrid>
     </Grid>
 </Window>

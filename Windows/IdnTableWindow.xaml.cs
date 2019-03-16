@@ -11,7 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Translator_desktop.LexicalAnalyzer.Tables;
+using Translator_desktop.LexicalAnalyse.Tables;
 
 namespace Translator_desktop.Windows
 {

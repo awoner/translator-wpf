@@ -11,8 +11,7 @@
         MinWidth="310"
         MaxWidth="310"
         Background="#424242" 
-        MinHeight="500"
-        Loaded="Window_Loaded">
+        MinHeight="500">
     <Grid>
         <ListView x:Name="parseTable" Margin="10px" Loaded="parseTable_Loaded">
             <ListView.View>

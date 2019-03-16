@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Windows;
-using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using Translator_desktop.Pages;
-using Translator_desktop.SyntaxAnalyser;
-using Translator_desktop.SyntaxAnalyzer.PrecedenceRelationships;
+using PushdownAutomatonMethod = Translator_desktop.SyntaxAnalyse.PushdownAutomatonMethod;
+using OperatorPrecedenceMethod = Translator_desktop.SyntaxAnalyse.OperatorPrecedenceMethod;
+using RecursiveDescentMethod = Translator_desktop.SyntaxAnalyse.RecursiveDescentMethod;
 using Translator_desktop.Windows;
 
 namespace Translator_desktop
@@ -18,11 +18,16 @@ namespace Translator_desktop
     /// </summary>
     public partial class MainWindow : Window
     {
-        public string AnalyzeType { get; set; } = "pushdownAutomation";
+        public string AnalyzeType { get; set; } = "operatorPrecedence";
 
         public MainWindow()
         {
             InitializeComponent();
+            TextRange doc = new TextRange(programCode.Document.ContentStart, programCode.Document.ContentEnd);
+            using (FileStream fs = new FileStream($@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\code.txt", FileMode.Open))
+            {               
+                    doc.Load(fs, DataFormats.Text);
+            }
         }
 
         private void openFile_Click(object sender, RoutedEventArgs e)
@@ -61,34 +66,42 @@ namespace Translator_desktop
             Application.Current.Shutdown();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            LexicalAnalyzer.Analyzer lexicalAnalyzer = new LexicalAnalyzer.Analyzer();
+            LexicalAnalyse.Analyser lexicalAnalyser = new LexicalAnalyse.Analyser();
+            lexicalAnalyser.Parse(GetTextFromRichTextbox());
             
-            lexicalAnalyzer.Parse(GetTextFromRichTextbox());
-
-
-            RelationshipsTable relationshipsTable = new RelationshipsTable();
-
-
-            if (AnalyzeType == "pushdownAutomation")
+            try
             {
-                SyntaxAnalyzer.Analyzer analyzer = new SyntaxAnalyzer.Analyzer();
-                analyzer.Parse();
-            }
-            else
-            {
-                RecursiveDescent recursiveDescent = new RecursiveDescent();
-
-                if (recursiveDescent.Parse())
+                if (AnalyzeType.Equals("pushdownAutomation"))
                 {
-                    listViewErrors.ItemsSource = null;
+                    PushdownAutomatonMethod.Analyser analyser = new PushdownAutomatonMethod.Analyser();
+                    analyser.Parse();
+                }
+                else if (AnalyzeType.Equals("recursiveDescent"))
+                {
+                    RecursiveDescentMethod.Analyser analyser = new RecursiveDescentMethod.Analyser();
+
+                    if (analyser.Parse())
+                    {
+                        listViewErrors.ItemsSource = null;
+                        MessageBox.Show("Build successfully.");
+                    }
+                    else
+                    {
+                        listViewErrors.ItemsSource = analyser.GetErrors();
+                    }
+                }
+                else if (AnalyzeType.Equals("operatorPrecedence"))
+                {
+                    OperatorPrecedenceMethod.Analyser analyser = new OperatorPrecedenceMethod.Analyser();
+                    analyser.Parse();
                     MessageBox.Show("Build successfully.");
                 }
-                else
-                {
-                    listViewErrors.ItemsSource = recursiveDescent.GetErrors();
-                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -138,8 +151,8 @@ namespace Translator_desktop
 
         private void syntaxSettings_Click(object sender, RoutedEventArgs e)
         {
-            SyntaxAnalyzerSettings syntaxAnalyzerSettings = new SyntaxAnalyzerSettings(this);
-            syntaxAnalyzerSettings.Show();
+            SyntaxAnalyserSettings syntaxAnalyserSettings = new SyntaxAnalyserSettings(this);
+            syntaxAnalyserSettings.Show();
         }
 
         private void grammarTable_Click(object sender, RoutedEventArgs e)
@@ -152,6 +165,12 @@ namespace Translator_desktop
         {
             RelationshipsTableWindow relationshipsTableWindow = new RelationshipsTableWindow();
             relationshipsTableWindow.Show();
+        }
+
+        private void StackTable_Click(object sender, RoutedEventArgs e)
+        {
+            StackTable stackTableWindow = new StackTable();
+            stackTableWindow.Show();
         }
     }
 }

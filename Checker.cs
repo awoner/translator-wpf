@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
-using Translator_desktop.LexicalAnalyzer.Tables;
+using Translator_desktop.LexicalAnalyse.Tables;
 
 namespace Translator_desktop
 {
@@ -16,12 +16,12 @@ namespace Translator_desktop
 
         public static bool IsConstant(char ch)
         {
-            return (char.IsNumber(ch) || ch == '.' || ch == 'E' || ch == 'e');
+            return (char.IsNumber(ch) || ".Ee".Contains(ch));
         }
 
         public static bool IsExponent(char ch)
         {
-            return (ch == 'e' || ch == 'E');
+            return "eE".Contains(ch);
         }
 
         public static bool IsLetter(char ch)
@@ -31,14 +31,12 @@ namespace Translator_desktop
 
         public static bool IsSingleCharacterSeparator(char ch)
         {
-            return (ch == '[' || ch == ']' || ch == '{' || ch == '}' ||
-                        ch == '(' || ch == ')' || ch == ',' || ch == ';' ||
-                        ch == '+' || ch == '-' || ch == '*' || ch == '/');
+            return "[]{}()+-*/,;#".Contains(ch);
         }
 
         public static bool IsPossibleDoubleSeparator(char ch)
         {
-            return (ch == '=' || ch == '<' || ch == '>' || ch == '!');
+            return "=<>!".Contains(ch);
         }
 
         public static bool IsDoubleSeparator(string str)
@@ -53,7 +51,7 @@ namespace Translator_desktop
 
         public static bool IsSign(char ch)
         {
-            return (ch == '+' || ch == '-');
+            return "+-".Contains(ch);
         }
 
         public static string GetType(string str)

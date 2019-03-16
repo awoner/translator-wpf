@@ -24,14 +24,9 @@ namespace Translator_desktop.Windows
             InitializeComponent();
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void parseTable_Loaded(object sender, RoutedEventArgs e)
         {
-            parseTable.ItemsSource = SyntaxAnalyzer.Analyzer.GetTable();
+            parseTable.ItemsSource = SyntaxAnalyse.PushdownAutomatonMethod.Analyser.GetTable();
         }
     }
 }
