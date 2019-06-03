@@ -11,9 +11,8 @@ namespace Translator_desktop.SyntaxAnalyse.OperatorPrecedenceMethod
     public static class RelationshipsTable
     {
         public static ICollection<Rule> Grammar { get; set; }
-        public static List<RelationshipToken> relationshipsTableBuffer;
-        private static List<RelationshipToken> relationshipsTable;
-        public static List<RelationshipToken> Table { get => relationshipsTable; }
+        public static List<RelationshipToken> RelationshipsTableBuffer { get; private set; }
+        public static List<RelationshipToken> Table { get; private set; }
         public static List<RuleBuffer> SimpleGrammar { get; set; }
 
         public static void InitTable()
@@ -21,7 +20,7 @@ namespace Translator_desktop.SyntaxAnalyse.OperatorPrecedenceMethod
             try
             {
                 Grammar = new List<Rule>();
-                relationshipsTable = new List<RelationshipToken>();
+                Table = new List<RelationshipToken>();
 
                 string projectRoot = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
                 string path = Directory.GetFiles(projectRoot, "StratifiedGrammar.json", SearchOption.AllDirectories).FirstOrDefault();
@@ -30,7 +29,7 @@ namespace Translator_desktop.SyntaxAnalyse.OperatorPrecedenceMethod
                 {
                     ParseGrammar(file);
                     BuildTable();
-                    relationshipsTableBuffer = relationshipsTable;
+                    RelationshipsTableBuffer = Table;
                     SaveToFile();
                     GetConflicts();
                 }
@@ -44,7 +43,7 @@ namespace Translator_desktop.SyntaxAnalyse.OperatorPrecedenceMethod
         private static void SaveToFile()
         {
             string str = string.Empty;
-            foreach (var item in relationshipsTable)
+            foreach (var item in Table)
             {
                 str += item.FirstLinguisticUnit.Name + " [" + item.Relationship + "] " + item.SecondLinguisticUnit.Name + "\n";
             }
@@ -173,11 +172,11 @@ namespace Translator_desktop.SyntaxAnalyse.OperatorPrecedenceMethod
 
             void AddToRelationshipsTable(RelationshipToken relationshipToken)
             {
-                if (relationshipsTable.FirstOrDefault(rt => rt.FirstLinguisticUnit.Name.Equals(relationshipToken.FirstLinguisticUnit.Name)
+                if (Table.FirstOrDefault(rt => rt.FirstLinguisticUnit.Name.Equals(relationshipToken.FirstLinguisticUnit.Name)
                                              && rt.Relationship.Equals(relationshipToken.Relationship)
                                              && rt.SecondLinguisticUnit.Name.Equals(relationshipToken.SecondLinguisticUnit.Name)) is null)
                 {
-                    relationshipsTable.Add(relationshipToken);
+                    Table.Add(relationshipToken);
                 }
             }
 
@@ -288,9 +287,9 @@ namespace Translator_desktop.SyntaxAnalyse.OperatorPrecedenceMethod
         public static List<RelationshipToken> GetConflicts()
         {
             Dictionary<RelationshipToken, RelationshipToken> conflicts = new Dictionary<RelationshipToken, RelationshipToken>();
-            foreach (var token in relationshipsTable)
+            foreach (var token in Table)
             {
-                RelationshipToken conflict = relationshipsTable.FirstOrDefault(c => c.FirstLinguisticUnit.Name == token.FirstLinguisticUnit.Name
+                RelationshipToken conflict = Table.FirstOrDefault(c => c.FirstLinguisticUnit.Name == token.FirstLinguisticUnit.Name
                             && c.SecondLinguisticUnit.Name == token.SecondLinguisticUnit.Name
                             && c.Relationship != token.Relationship);
                 if (conflict != null 

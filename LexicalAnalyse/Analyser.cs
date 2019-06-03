@@ -15,12 +15,10 @@ namespace Translator_desktop.LexicalAnalyse
             OutputTokenTable.InitTable();
         }
 
-        public void Parse(string[] programCode)
+        public bool Parse(string[] programCode)
         {
             try
             {
-                OutputTokenTable.Add(numRow: 0, "$");
-
                 string token = string.Empty;
                 for (int i = 0; i < programCode.Length; i++)
                 {
@@ -28,6 +26,13 @@ namespace Translator_desktop.LexicalAnalyse
 
                     foreach (char ch in programCode[i])
                     {
+                        if (ch.Equals('$'))
+                        {
+                            OutputTokenTable.Add(numRow: i, ch.ToString());
+                            j++;
+                            continue;
+                        }
+
                         if (Checker.IsConstant(ch) 
                             || Checker.IsLetter(ch) 
                             || (Checker.IsSign(ch) && !string.IsNullOrEmpty(token) && Checker.IsExponent(token.Last())))
@@ -74,11 +79,12 @@ namespace Translator_desktop.LexicalAnalyse
                         j++;
                     }
                 }
-                OutputTokenTable.Add(numRow: programCode.Length, "$");
+                return true;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Alert", MessageBoxButton.OK);
+                return false;
             }
         }
 
@@ -100,18 +106,25 @@ namespace Translator_desktop.LexicalAnalyse
 
         private void AddToConTable(ref string token, ref int i)
         {
-            string penultimateToken = OutputTokenTable.Table[OutputTokenTable.Table.Count - 2].Name;
-
-            if (OutputTokenTable.Table.Last().Name.Equals("=") && IdnTable.Contains(penultimateToken))
+            if (OutputTokenTable.Table.Count > 1)
             {
-                if (Checker.GetType(token) == IdnTable.GetType(penultimateToken))
+                string penultimateToken = OutputTokenTable.Table[OutputTokenTable.Table.Count - 2].Name;
+
+                if (OutputTokenTable.Table.Last().Name.Equals("=") && IdnTable.Contains(penultimateToken))
                 {
-                    ConTable.Add(token, IdnTable.GetType(penultimateToken));
+                    if (Checker.GetType(token) == IdnTable.GetType(penultimateToken))
+                    {
+                        ConTable.Add(token, IdnTable.GetType(penultimateToken));
+                    }
+                    else
+                    {
+                        throw new Exception($"Error on {i + 1} line!\tInvalid type of constant. Unable to cast " +
+                            $"'{Checker.GetType(token)}' to '{IdnTable.GetType(penultimateToken)}'");
+                    }
                 }
-                else
+                else if (!ConTable.Contains(token))
                 {
-                    throw new Exception($"Error on {i + 1} line!\tInvalid type of constant. Unable to cast " +
-                        $"'{Checker.GetType(token)}' to '{IdnTable.GetType(penultimateToken)}'");
+                    ConTable.Add(token);
                 }
             }
             else if (!ConTable.Contains(token))

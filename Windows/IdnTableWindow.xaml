@@ -7,9 +7,9 @@
         mc:Ignorable="d"
         Title="Table of identifiers"
         Height="300" 
-        Width="275" 
+        Width="375" 
         MinWidth="275"
-        MaxWidth="275"
+        MaxWidth="375"
         Background="#424242" 
         MinHeight="300">
     <Grid>
@@ -18,7 +18,8 @@
                 <GridView>
                     <GridViewColumn DisplayMemberBinding="{Binding Code}" Header="№" Width="30px"/>
                     <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Name" Width="100px"/>
-                    <GridViewColumn DisplayMemberBinding="{Binding Type}" Header="Type" Width="100px"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding ValueType}" Header="Type" Width="100px"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Value}" Header="Value" Width="100px"/>
                 </GridView>
             </ListView.View>
         </ListView>

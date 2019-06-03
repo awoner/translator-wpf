@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
+using Translator_desktop.LexicalAnalyse;
 using Translator_desktop.LexicalAnalyse.Tables;
 
 namespace Translator_desktop.SyntaxAnalyse.PushdownAutomatonMethod

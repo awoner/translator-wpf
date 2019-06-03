@@ -14,14 +14,15 @@
   {"LeftPart": "<assign.>", "RightPart": "id = <E1>"},
   {"LeftPart": "<RL>", "RightPart": "true | false | <E> <SG> <E1>"},
   {"LeftPart": "<SG>", "RightPart": "< | > | <= | >= | == | !="},
-  {"LeftPart": "<E>", "RightPart": "<T1> | <E> + <T1> | <E> - <T1>"},
+  {"LeftPart": "<E>", "RightPart": "<T1> | <E> + <T1> | <E> - <T1> | - <T1>"},
   {"LeftPart": "<T>", "RightPart": "<F> | <T> * <F> | <T> / <F>"},
-  {"LeftPart": "<F>", "RightPart": "id | con | ( <E2> ) | -<F>"},
+  {"LeftPart": "<F>", "RightPart": "id | con | ( <E2> )"},
   {"LeftPart": "<op.list1>", "RightPart": "<op.list>"},
   {"LeftPart": "<dec.list1>", "RightPart": "<dec.list>"},
   {"LeftPart": "<var.list1>", "RightPart": "<var.list>"},
   {"LeftPart": "<E1>", "RightPart": "<E>"},
   {"LeftPart": "<T1>", "RightPart": "<T>"},
   {"LeftPart": "<E2>", "RightPart": "<E1>"},
-  {"LeftPart": "<assign.1>", "RightPart": "<assign.>"}
+  {"LeftPart": "<assign.1>", "RightPart": "<assign.>"},
+  {"LeftPart": "<F1>", "RightPart": "<F>"}
 ]

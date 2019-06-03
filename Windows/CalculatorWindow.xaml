@@ -1,0 +1,102 @@
+﻿<Window x:Class="Translator_desktop.Windows.CalculatorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Translator_desktop.Windows"
+        mc:Ignorable="d"
+       Title="Calculator" Height="400" Width="600" Background="#424242" Foreground="#ffffff">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.6*"></RowDefinition>
+            <RowDefinition Height="4*"></RowDefinition>
+            <RowDefinition Height="0.6*"></RowDefinition>
+            <RowDefinition Height="2*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+                
+        <Label Content="Variables:" 
+               Grid.Row="0" 
+               Grid.Column="0" 
+               HorizontalAlignment="Left" 
+               Foreground="#ffffff"></Label>
+
+        <Button x:Name="addVariableButton" 
+                Click="AddVariableButton_Click" 
+                Grid.Row="0" 
+                Grid.Column="0"
+                Margin="0 0 5 0" 
+                HorizontalAlignment="Right" 
+                Background="LightGreen" 
+                Content="Add" 
+                Padding="20 0 20 0"></Button>
+
+        <DataGrid x:Name="variablesListView"
+                  SelectionUnit="Cell"
+                  CellEditEnding="VariablesListView_CellEditEnding"
+                  SelectionMode="Extended"
+                  IsReadOnly="False"
+                  CanUserAddRows="True" 
+                  CanUserDeleteRows="True" 
+                  Grid.Row="1" 
+                  Grid.Column="0" 
+                  Margin="5"
+                  AutoGenerateColumns="False">
+
+            
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Width="*" IsReadOnly="False" Binding="{Binding Name}"/>
+                <DataGridHyperlinkColumn Header="Value" Width="*" IsReadOnly="False" Binding="{Binding Value}"/>
+            </DataGrid.Columns>
+            
+        </DataGrid>
+
+
+        <Label Content="Expression:"
+               Grid.Row="2" 
+               Grid.Column="0" 
+               Foreground="#ffffff"></Label>
+        
+        <TextBox x:Name="expressionTextBox" 
+                 Grid.Row="3" 
+                 Grid.Column="0" 
+                 Grid.RowSpan="1" 
+                 Margin="5"></TextBox>
+
+        
+        <Label Content="Result:" 
+               Grid.Row="0"
+               Grid.Column="1"
+               Foreground="#ffffff"></Label>
+        
+        <TextBox x:Name="resultTextBox" 
+                 Grid.Row="1" 
+                 Grid.Column="1" 
+                 Margin="5"></TextBox>
+
+        
+        <Label Content="Errors:"
+               Grid.Row="2" 
+               Grid.Column="1"
+               Foreground="#ffffff"></Label>
+        
+        <TextBox x:Name="errorsTextBox"
+                 Grid.Row="3" 
+                 Grid.Column="1"
+                 Margin="5"></TextBox>
+        
+
+        <Button x:Name="calculateButton" 
+                Grid.Row="4" 
+                Grid.Column="1" 
+                Margin="5 2 5 2" 
+                Background="LightGreen" 
+                Content="Calculate"
+                Click="CalculateButton_Click"></Button>
+    </Grid>
+</Window>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace Translator_desktop.LexicalAnalyse.Tables
 {
@@ -10,8 +11,7 @@ namespace Translator_desktop.LexicalAnalyse.Tables
     static class OutputTokenTable
     {
         private static int number = 1;
-        private static IList<Token> outputTokenTable;
-        public static IList<Token> Table { get => outputTokenTable; }
+        public static List<Token> Table { get; private set; }
 
         /// <summary>
         /// Return a string representation of the table
@@ -25,7 +25,7 @@ namespace Translator_desktop.LexicalAnalyse.Tables
             str.Append("|   №   |   Row   |    Name    |   TokenCode   |   IdnCode   |   ConCode   |\n");
             str.Append(separator);
 
-            foreach (Token token in outputTokenTable)
+            foreach (Token token in Table)
             {
                 str.AppendFormat("|{0, 4}   |{1, 6}   |{2, 8}    |{3, 9}      |{4,7}      |{5,7}      |\n",
                               token.Code, token.Row, token.Name, token.TokenCode, token.IdnCode, token.ConCode);
@@ -41,7 +41,7 @@ namespace Translator_desktop.LexicalAnalyse.Tables
         public static void InitTable()
         {
             number = 1;
-            outputTokenTable = new List<Token>();
+            Table = new List<Token>();
         }
 
         /// <summary>
@@ -49,19 +49,53 @@ namespace Translator_desktop.LexicalAnalyse.Tables
         /// </summary>
         public static void Add(int numRow, string token)
         {
+            string GetTokenType()
+            {
+                if (IdnTable.Contains(token))
+                {
+                    return "IDN";
+                }
+                else if (ConTable.Contains(token))
+                {
+                    return "CON";
+                }
+                else if (token.Equals("-") && !(Table.Last().TokenType.Equals("IDN") || Table.Last().TokenType.Equals("CON") || Table.Last().Name.Equals(")")))
+                {
+                    return "@";
+                }
+
+                return string.Empty;
+            }
+
+            int GetTokenCode()
+            {
+                if (IdnTable.GetCode(token) != 0)
+                {
+                    return TokenTable.GetCode("IDN");
+                }
+                else if (ConTable.GetCode(token) != 0)
+                {
+                    return TokenTable.GetCode("CON");
+                }
+                else
+                {
+                    return TokenTable.GetCode(token);
+                }
+            }
+
             if (TokenTable.Contains(token) || ConTable.Contains(token) || IdnTable.Contains(token))
             {
-                outputTokenTable.Add(new Token
+                Table.Add(new Token
                 {
                     Code = number,
                     Row = numRow,
-                    Type = Checker.Type,
+                    ValueType = Checker.Type,
                     Name = token,
                     IdnCode = IdnTable.GetCode(token),
                     ConCode = ConTable.GetCode(token),
-                    TokenCode = IdnTable.GetCode(token) != 0 ? 
-                            TokenTable.GetCode("IDN") : ConTable.GetCode(token) != 0 ?
-                                    TokenTable.GetCode("CON") : TokenTable.GetCode(token)
+                    TokenType = GetTokenType(),
+                    TokenCode = GetTokenCode(),
+                    Value = IdnTable.GetValue(token)
                 });
                 number++;
             }

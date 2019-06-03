@@ -10,6 +10,8 @@ using PushdownAutomatonMethod = Translator_desktop.SyntaxAnalyse.PushdownAutomat
 using OperatorPrecedenceMethod = Translator_desktop.SyntaxAnalyse.OperatorPrecedenceMethod;
 using RecursiveDescentMethod = Translator_desktop.SyntaxAnalyse.RecursiveDescentMethod;
 using Translator_desktop.Windows;
+using Translator_desktop.RPN;
+using Translator_desktop.RPN.Generator;
 
 namespace Translator_desktop
 {
@@ -18,7 +20,7 @@ namespace Translator_desktop
     /// </summary>
     public partial class MainWindow : Window
     {
-        public string AnalyzeType { get; set; } = "operatorPrecedence";
+        public string AnalyzeType { get; set; } = "recursiveDescent";
 
         public MainWindow()
         {
@@ -85,7 +87,15 @@ namespace Translator_desktop
                     if (analyser.Parse())
                     {
                         listViewErrors.ItemsSource = null;
-                        MessageBox.Show("Build successfully.");
+
+                        IPolishGenerator generator = new DeijkstraGenerator();
+                        generator.Start();
+
+                        ConsoleWindow consoleWindow = new ConsoleWindow();
+                        consoleWindow.Show();
+
+                        Executor polishExecutor = new Executor(generator, consoleWindow);
+                        polishExecutor.Execute();                        
                     }
                     else
                     {
@@ -120,6 +130,10 @@ namespace Translator_desktop
                 {
                     code.Add(line);
                 }
+
+                //code[0] = "$ " + code[0];
+                
+                //code[code.Count - 1] += " $";
             }
 
             return code.ToArray();
@@ -153,6 +167,7 @@ namespace Translator_desktop
         {
             SyntaxAnalyserSettings syntaxAnalyserSettings = new SyntaxAnalyserSettings(this);
             syntaxAnalyserSettings.Show();
+            AnalyzeType = syntaxAnalyserSettings.Algorithm;
         }
 
         private void grammarTable_Click(object sender, RoutedEventArgs e)
@@ -171,6 +186,18 @@ namespace Translator_desktop
         {
             StackTable stackTableWindow = new StackTable();
             stackTableWindow.Show();
+        }
+
+        private void CalculatorMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            CalculatorWindow calculatorWindow = new CalculatorWindow();
+            calculatorWindow.Show();
+        }
+
+        private void ExecutorTable_Click(object sender, RoutedEventArgs e)
+        {
+            ExecutorTableWindow executorTableWindow = new ExecutorTableWindow();
+            executorTableWindow.Show();
         }
     }
 }

@@ -40,11 +40,13 @@
                     <MenuItem Header="Grammar" BorderThickness="0" Click="grammarTable_Click"  Background="#6d6d6d" Foreground="#ffffff" x:Name="grammarTable" />
                     <MenuItem Header="Relationships table" BorderThickness="0" Click="relationshipsTable_Click"  Background="#6d6d6d" Foreground="#ffffff" x:Name="relationshipsTable" />
                     <MenuItem Header="Stack table" BorderThickness="0" Click="StackTable_Click"  Background="#6d6d6d" Foreground="#ffffff" x:Name="stackTable" />
+                    <MenuItem Header="Executor table" BorderThickness="0" Click="ExecutorTable_Click"  Background="#6d6d6d" Foreground="#ffffff" x:Name="executorTable" />
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="Settings" Background="#6d6d6d" BorderThickness="0" Foreground="#ffffff">
                 <MenuItem Header="Syntax analyze type" BorderThickness="0" Click="syntaxSettings_Click"  Background="#6d6d6d" Foreground="#ffffff" x:Name="syntaxSettings" />
             </MenuItem>
+            <MenuItem x:Name="calculatorMenuItem" Header="Calculator" Background="#6d6d6d" BorderThickness="0" Foreground="#ffffff" Click="CalculatorMenuItem_Click"></MenuItem>
         </Menu>
 
         <Button Content="Start"

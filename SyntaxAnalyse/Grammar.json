@@ -1,13 +1,13 @@
 [
-  {"LeftPart": "<prog.>", "RightPart": "{ <op.list> }"},
-  {"LeftPart": "<dec.list>", "RightPart": "<dec.list>; <dec.> | <dec.>"},
+  {"LeftPart": "<prog.>", "RightPart": "<dec.list> { <op.list> }"},
+  {"LeftPart": "<dec.list>", "RightPart": "<dec.list> ; <dec.> | <dec.>"},
   {"LeftPart": "<dec.>", "RightPart": "<type> <var.list>"},
-  {"LeftPart": "<var.list>", "RightPart": "id | id, <var.list>"},
+  {"LeftPart": "<var.list>", "RightPart": "id | id , <var.list>"},
   {"LeftPart": "<type>", "RightPart": "int | float | double"},
-  {"LeftPart": "<op.list>", "RightPart": "<op.list> <op.>; | <op.>;"},
+  {"LeftPart": "<op.list>", "RightPart": "<op.list> <op.> ; | <op.> ;"},
   {"LeftPart": "<op.>", "RightPart": "<loop> | <cond.> | <assign.> | <input> | <output>"},
-  {"LeftPart": "<loop>", "RightPart": "for(id = <E>; <RL>; <E>)<op.bl.>"},
-  {"LeftPart": "<cond.>", "RightPart": "if(<RL>)<op.bl.>"},
+  {"LeftPart": "<loop>", "RightPart": "for ( <assign.> ; <RL> ; <E> ) <op.bl.>"},
+  {"LeftPart": "<cond.>", "RightPart": "if ( <RL> ) <op.bl.>"},
   {"LeftPart": "<op.bl.>", "RightPart": "{ <op.list> } | <op.>"},
   {"LeftPart": "<input>", "RightPart": "cin << id | <input> << id"},
   {"LeftPart": "<output>", "RightPart": "cout >> id | <output> >> id"},
@@ -16,5 +16,5 @@
   {"LeftPart": "<SG>", "RightPart": "< | > | <= | >= | == | !="},
   {"LeftPart": "<E>", "RightPart": "<T> | <E> + <T> | <E> - <T>"},
   {"LeftPart": "<T>", "RightPart": "<F> | <T> * <F> | <T> / <F>"},
-  {"LeftPart": "<F>", "RightPart": "id | con | (<E>) | -<F>"}
+  {"LeftPart": "<F>", "RightPart": "IDN | CON | ( <E> ) | - <F>"}
 ]

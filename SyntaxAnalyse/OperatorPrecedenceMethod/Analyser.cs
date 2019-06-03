@@ -1,12 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
+using Translator_desktop.LexicalAnalyse;
 using Translator_desktop.LexicalAnalyse.Tables;
 
 namespace Translator_desktop.SyntaxAnalyse.OperatorPrecedenceMethod
 {
     public class Analyser
     {
+        private List<Token> outputTokenTable;
+        private List<RelationshipToken> relationshipsTable;
+        private Stack<Token> stack;
+        public static List<ViewToken> Table { get; private set; }
+        public List<Token> PolisOutput { get; set; }
+        public string Error { get; set; }
+
         public class ViewToken
         {
             public int step;
@@ -14,6 +24,7 @@ namespace Translator_desktop.SyntaxAnalyse.OperatorPrecedenceMethod
             public string Stack { get; set; }
             public string Relation { get; set; }
             public string InputString { get; set; }
+            public string Polis { get; set; }
 
             public ViewToken()
             {
@@ -21,94 +32,137 @@ namespace Translator_desktop.SyntaxAnalyse.OperatorPrecedenceMethod
             }
         }
 
-        private static IList<ViewToken> viewTokenTable;
-        private IList<Token> outputTokenTable;
-        public IList<RelationshipToken> relationshipsTable;
-        private Stack<Token> stack;
-        public static IList<ViewToken> Table { get => viewTokenTable; }
-
         public Analyser()
         {
+            outputTokenTable = OutputTokenTable.Table.ToList();
             RelationshipsTable.InitTable();
             relationshipsTable = RelationshipsTable.Table;
-            outputTokenTable = OutputTokenTable.Table.ToList();
-            ViewToken.Step = 0;
-            viewTokenTable = new List<ViewToken>();
+            //ViewToken.Step = 0;
+            Table = new List<ViewToken>();
+            PolisOutput = new List<Token>();
             stack = new Stack<Token>();
         }
 
         public void Parse()
         {
-            Token TrySetGeneralizeName(Token token)
-            {
-                if (!TokenTable.Contains(token.Name))
-                {
-                    if (IdnTable.Contains(token.Name))
-                    {
-                        return new Token { Code = token.Code, Name = "id", Row = token.Row };
-                    }
-                    else if (ConTable.Contains(token.Name))
-                    {
-                        return new Token { Code = token.Code, Name = "con", Row = token.Row };
-                    }
-                    else
-                    {
-                        throw new Exception("Unknow token.");
-                    }
-                }
-
-                return token;
-            }
-
             while (outputTokenTable.Count > 0)
-            {                
-                Token token = outputTokenTable.First();
+            {
+                Token inputToken = outputTokenTable.First();
 
-                if (stack.Count < 2)
+                if (stack.Count < 1)
                 {
-                    stack.Push(token);
-                    outputTokenTable.Remove(token);
+                    stack.Push(inputToken);
+                    outputTokenTable.Remove(inputToken);
+                    AddTokenToViewTable("<");
 
-                    if (stack.Count == 1)
-                    {
-                        AddTokenToViewTable("<");
-                    }
-                    
                     continue;
                 }
 
                 Token stackToken = stack.Peek();
-                Token inputToken = TrySetGeneralizeName(token);
 
                 string relation = relationshipsTable
-                    .FirstOrDefault(rl => 
+                    .FirstOrDefault(rl =>
                     {
-                        return rl.FirstLinguisticUnit.Name.Equals(stackToken.Name) 
-                            && rl.SecondLinguisticUnit.Name.Equals(inputToken.Name);
+                        return rl.FirstLinguisticUnit.Name.Equals(GetRelationName(stackToken))
+                            && rl.SecondLinguisticUnit.Name.Equals(GetRelationName(inputToken));
                     })?.Relationship;
 
                 AddTokenToViewTable(relation);
 
-                if (stackToken.Name.Equals(RelationshipsTable.Grammar.First().LeftPart.Name))
+                if (relation is null)
+                {
+                    throw new Exception($"Syntax error on {inputToken.Row} line!");
+                }
+
+                if (relation.Equals("<") || relation.Equals("="))
+                {
+                    stack.Push(inputToken);
+                    outputTokenTable.Remove(inputToken);
+                }
+                else if (stackToken.Name.Equals(RelationshipsTable.Grammar.First().LeftPart.Name) ||
+                   stack.Count != 0 && stack.Peek().Name.Equals("<E>") && inputToken.Name.Equals("$"))
                 {
                     stack.Push(inputToken);
                     return;
-                }
-                else if (relation.Equals("<") || relation.Equals("="))
-                {
-                    stack.Push(inputToken);
-                    outputTokenTable.Remove(token);
                 }
                 else if (relation.Equals(">"))
                 {
                     SetPossibleBasis();
                 }
-                else if (relation is null)
-                {
-                    throw new Exception($"Syntax error on {inputToken.Row} line!");
-                }
             }
         }
+
+        public double GetPolisResult()
+        {
+            if (PolisOutput.Count != 0)
+            {
+                double first = 0, second = 0;
+                Stack<double> polisNums = new Stack<double>();
+
+                for (int i = 0; i < PolisOutput.Count; i++)
+                {
+                    if (Checker.IsOperator(PolisOutput[i].Name))
+                    {
+                        switch (PolisOutput[i].Name)
+                        {
+                            case "+":
+                                second = polisNums.Pop();
+                                first = polisNums.Pop();
+                                polisNums.Push(first + second);
+                                break;
+
+                            case "-":
+                                second = polisNums.Pop();
+                                first = polisNums.Pop();
+                                polisNums.Push(first - second);
+                                break;
+
+                            case "/":
+                                second = polisNums.Pop();
+                                first = polisNums.Pop();
+
+                                if (second == 0.0)
+                                {
+                                    Error = "Division by 0.";
+                                    return 0;
+                                }
+
+                                polisNums.Push(first / second);
+                                break;
+
+                            case "*":
+                                second = polisNums.Pop();
+                                first = polisNums.Pop();
+                                polisNums.Push(first * second);
+                                break;
+
+                            case "@":
+                                polisNums.Push(-polisNums.Pop());
+                                break;
+
+                            default:
+                                throw new InvalidOperationException();
+                        }
+                    }
+                    else
+                    {
+                        if (PolisOutput[i].TokenType != "IDN")
+                            double.TryParse(PolisOutput[i].Name, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out first);
+                        else
+                            first = (double)PolisOutput[i].Value;//double.TryParse(, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out first);
+                        polisNums.Push(first);
+                    }
+                }
+                return polisNums.Pop();
+            }
+
+            throw new NotImplementedException();
+        }
+
+        private string GetRelationName(Token token)
+        {
+            return (string.IsNullOrEmpty(token.TokenType)) ? token.Name : token.TokenType;
+        }    
 
         private void SetPossibleBasis()
         {
@@ -126,8 +180,8 @@ namespace Translator_desktop.SyntaxAnalyse.OperatorPrecedenceMethod
 
                     relation = relationshipsTable.FirstOrDefault(rl =>
                     {
-                        return rl.FirstLinguisticUnit.Name.Equals(previousToken.Name)
-                           && rl.SecondLinguisticUnit.Name.Equals(currentToken.Name);
+                        return rl.FirstLinguisticUnit.Name.Equals(GetRelationName(previousToken))
+                           && rl.SecondLinguisticUnit.Name.Equals(GetRelationName(currentToken));
                     })?.Relationship;
                 }
                 else
@@ -148,7 +202,7 @@ namespace Translator_desktop.SyntaxAnalyse.OperatorPrecedenceMethod
                     }
                     else
                     {
-                        throw new Exception($"Relationship is not defined {previousToken.Row} line.");
+                        throw new Exception($"Relationship is not defined {((previousToken?.Row is null) ? currentToken.Row : previousToken.Row)} line.");
                     }                    
                 }
                 else if (relation.Equals(string.Empty))
@@ -171,7 +225,7 @@ namespace Translator_desktop.SyntaxAnalyse.OperatorPrecedenceMethod
 
                 for (int i = 0; i < tokens.Count; i++)
                 {
-                    if (!tokens[i].Name.Equals(linguisticUnits[i].Name)) return false;
+                    if (!GetRelationName(tokens[i]).Equals(linguisticUnits[i].Name)) return false;
                 }
 
                 return true;
@@ -180,18 +234,76 @@ namespace Translator_desktop.SyntaxAnalyse.OperatorPrecedenceMethod
             possibleBasis.Reverse();
 
             var basises = RelationshipsTable.Grammar.Where(r => r.RightParts.Select(rp => rp.LinguisticUnits).Any(lu => ListCompare(possibleBasis, lu)));
-            basis = (!(previousToken is null) && (previousToken.Name.Equals("(") || previousToken.Name.Equals("#"))) ? basises.Last() : basises.First();
+
+            if (basises != null)
+            {
+                if (string.Join(" ", possibleBasis.Select(pb => pb.Name)).Equals("- <T1>"))
+                {
+                    var terminal = (Token)possibleBasis.First().Clone();
+                    terminal.Name = "@";
+                    PolisOutput.Add(terminal);
+                }
+                else
+                {
+                    var terminals = possibleBasis.Where(pb => !(new Regex(@"^<.+>$").IsMatch(pb.Name)) && !"()".Contains(pb.Name));
+                    PolisOutput.AddRange(terminals);
+                }
+                
+            }
+
+            //TODO: rewrite next code
+
+
+
+            //if (previousToken != null)
+            //{
+
+            //}
+            //else
+            //{
+            //    if(possibleBasis.First().TokenType.)
+            //}
+
+            if (previousToken != null)
+            {
+                //basis = basises.FirstOrDefault();
+                var cond = (stack.Count != 0) ? stack.Pop() : null;
+                if (previousToken.Name.Equals("(") || previousToken.Name.Equals("#") || possibleBasis.First().TokenType.Equals("IDN")/*|| "/*".Contains(previousToken.Name)*/
+                                                                                                                                    /*|| cond != null && (new Regex(@"^<.+>$").IsMatch(stack.Peek().Name)) && (previousToken.Equals("-") || !possibleBasis[0].Name.Equals("<F>"))*/)
+                {
+                    basis = basises.LastOrDefault();
+                }
+                else
+                {
+                    basis = basises.FirstOrDefault();
+                }
+
+                if (previousToken.Name.Equals("(") && basis.LeftPart.Name.Equals("<F1>"))
+                {
+                    basis = basises.FirstOrDefault();
+                }
+                if (cond != null)
+                {
+                    stack.Push(cond);
+
+                }
+            }
+            else
+            {
+                basis = basises.FirstOrDefault();
+            }
 
             return (basis is null) ? false : true;
         }
 
         private void AddTokenToViewTable(string relation = null)
         {
-            viewTokenTable.Add(new ViewToken
+            Table.Add(new ViewToken
             {
                 InputString = string.Join(" ", outputTokenTable.Select(ot => ot.Name)),
                 Relation = relation,
-                Stack = string.Join(" ", stack.Reverse().Select(st => st.Name))
+                Stack = string.Join(" ", stack.Reverse().Select(st => st.Name)),
+                Polis = string.Join(" ", PolisOutput.Select(st => st.Name))
             });
         }
     }

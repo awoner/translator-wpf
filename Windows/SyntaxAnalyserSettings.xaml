@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Translator_desktop.Windows"
         mc:Ignorable="d"
         Title="Syntax analyser settings"
-        Height="150" 
+        Height="170" 
         Width="210" 
         MinWidth="210"
         MaxWidth="210"
@@ -16,9 +16,9 @@
     <Grid>
         <GroupBox Header="Choose algorithm" Padding="5">
             <StackPanel>
-                <RadioButton Margin="3" x:Name="recursiveDesedent">Recursive desedent</RadioButton>
+                <RadioButton Margin="3" x:Name="recursiveDescent" IsChecked="True">Recursive descent</RadioButton>
                 <RadioButton Margin="3" x:Name="pushdownAutomaton">Pushdown automaton</RadioButton>
-                <RadioButton Margin="3" x:Name="operatorPrecedence" IsChecked="True" >Operator precedence</RadioButton>
+                <RadioButton Margin="3" x:Name="operatorPrecedence">Operator precedence</RadioButton>
             </StackPanel>
         </GroupBox>
         <Button Width="80"

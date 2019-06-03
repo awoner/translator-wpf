@@ -1,4 +1,6 @@
-﻿namespace Translator_desktop.SyntaxAnalyse.OperatorPrecedenceMethod
+﻿using Translator_desktop.LexicalAnalyse;
+
+namespace Translator_desktop.SyntaxAnalyse.OperatorPrecedenceMethod
 {
     public class RelationshipToken
     {

@@ -10,8 +10,7 @@ namespace Translator_desktop.LexicalAnalyse.Tables
     static class ConTable
     {
         private static int code = 1;
-        private static IList<Token> conTable;
-        public static IList<Token> Table { get => conTable; }
+        public static IList<Token> Table { get; private set; }
 
         /// <summary>
         /// Return a string representation of the table
@@ -25,9 +24,9 @@ namespace Translator_desktop.LexicalAnalyse.Tables
             str.Append("|   №   |    Name    |    Type    |\n");
             str.Append(separator);
 
-            foreach (Token token in conTable)
+            foreach (Token token in Table)
             {
-                str.AppendFormat("|{0, 4}   |{1, 9}   |{2, 8}    |\n", token.Code, token.Name, token.Type);
+                str.AppendFormat("|{0, 4}   |{1, 9}   |{2, 8}    |\n", token.Code, token.Name, token.ValueType);
                 str.Append(separator);
             }
 
@@ -39,7 +38,7 @@ namespace Translator_desktop.LexicalAnalyse.Tables
         /// </summary>
         public static void InitTable()
         {
-            conTable = new List<Token>();
+            Table = new List<Token>();
         }
 
         /// <summary>
@@ -47,7 +46,7 @@ namespace Translator_desktop.LexicalAnalyse.Tables
         /// </summary>
         public static int GetCode(string token)
         {
-            int? code = conTable.FirstOrDefault(c => c.Name == token)?.Code;
+            int? code = Table.FirstOrDefault(c => c.Name == token)?.Code;
 
             return code ?? 0;
         }
@@ -57,7 +56,7 @@ namespace Translator_desktop.LexicalAnalyse.Tables
         /// </summary>
         public static bool Contains(string constant)
         {
-            return (conTable.FirstOrDefault(c => c.Name == constant) is null) ? false : true;
+            return (Table.FirstOrDefault(c => c.Name == constant) is null) ? false : true;
         }
 
         /// <summary>
@@ -67,22 +66,22 @@ namespace Translator_desktop.LexicalAnalyse.Tables
         {
             if (token.Contains('.') && (token.Contains('e') || token.Contains('E')) && type is null)
             {
-                conTable.Add(new Token { Code = code, Name = token, Type = "double" });
+                Table.Add(new Token { Code = code, Name = token, ValueType = "double" });
                 code++;
             }
             else if (token.Contains('.') && type is null)
             {
-                conTable.Add(new Token { Code = code, Name = token, Type = "float" });
+                Table.Add(new Token { Code = code, Name = token, ValueType = "float" });
                 code++;
             }
             else if (type is null)
             {
-                conTable.Add(new Token { Code = code, Name = token, Type = "int" });
+                Table.Add(new Token { Code = code, Name = token, ValueType = "int" });
                 code++;
             }
             else
             {
-                conTable.Add(new Token { Code = code, Name = token, Type = type });
+                Table.Add(new Token { Code = code, Name = token, ValueType = type });
                 code++;
             }
         }

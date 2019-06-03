@@ -98,5 +98,30 @@ namespace Translator_desktop
                 //types of tokens on both sides of "=" are equal
                 && (IdnTable.GetType(token) == IdnTable.GetType(OutputTokenTable.Table[OutputTokenTable.Table.Count - 2].Name));
         }
+
+        public static bool IsOperator(string token)
+        {
+            return "+-/*@".Contains(token);
+        }
+
+        public static bool IsRelation(string token)
+        {
+            return new string[] { "<", ">", "<=", ">=", "!=", "==", "true", "false" }.Contains(token);
+        }
+
+        public static bool IsBinaryOperator(string token)
+        {
+            return "+-/*=".Contains(token)|| token == "<<" || token == ">>" || IsRelation(token);
+        }
+
+        public static bool IsUnaryOperator(string token)
+        {
+            return IsType(token) || token == "@";
+        }
+
+        public static bool IsIO(string token)
+        {
+            return token == ">>" || token == "<<";
+        }
     }
 }

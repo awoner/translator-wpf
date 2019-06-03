@@ -1,5 +1,9 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
+using Translator_desktop.LexicalAnalyse.Tables;
+using Translator_desktop.RPN;
+using Translator_desktop.RPN.Generator;
 
 namespace Translator_desktop.Windows
 {
@@ -11,7 +15,7 @@ namespace Translator_desktop.Windows
         public StackTable()
         {
             InitializeComponent();
-            stackTable.ItemsSource = SyntaxAnalyse.OperatorPrecedenceMethod.Analyser.Table.Select(t => new { Step = t.step, t.Stack, t.Relation, t.InputString });
+            stackTable.ItemsSource = DeijkstraGenerator.Table;
         }
     }
 }

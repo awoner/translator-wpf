@@ -2,6 +2,7 @@
 using Translator_desktop.LexicalAnalyse.Tables;
 using System.Collections.Generic;
 using System.Windows;
+using Translator_desktop.LexicalAnalyse;
 
 namespace Translator_desktop.SyntaxAnalyse.RecursiveDescentMethod
 {
@@ -44,56 +45,61 @@ namespace Translator_desktop.SyntaxAnalyse.RecursiveDescentMethod
 
             try
             {
-                if (DeclarationsList(ref i))
-                {
-                    if (outputTokens[i].Name == "{")
-                    {
-                        if (!Increment(ref i)) { return false; }
-
-                        if (OperatorsList(ref i))
-                        {
-                            if (outputTokens[i].Name == "}")
-                            {
-                                if (i < outputTokens.Count - 1)
-                                {
-                                    i++;
-                                    for (int j = i; j < outputTokens.Count; j++)
-                                    {
-                                        errors.Add(" > Error on " + outputTokens[j].Row + " line!\tEnexpected symbol '" + outputTokens[j].Name + "'!");
-                                    }
-                                    return false;
-                                }
-                                return true;
-                            }
-                            else
-                            {
-                                errors.Add(" > Error on " + outputTokens[i].Row + " line!\tNo closing bracket '}'!");
-                                return false;
-                            }
-                        }
-                        else
-                        {
-                            errors.Add(" > Error on " + outputTokens[i].Row + " line!\tUnxpected end of file!");
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        errors.Add(" > Error on " + outputTokens[i].Row + " line!\tNo open bracket '{'!");
-                        return false;
-                    }
-                }
-                else
-                {
-                    errors.Add(" > Error on " + outputTokens[i].Row + " line!\tExpected variable list.");
-                    return false;
-                }
+                return Programm(ref i);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Alert", MessageBoxButton.OK);
             }
             return false;
+        }
+
+        private bool Programm(ref int i)
+        {
+            if (DeclarationsList(ref i))
+            {
+                if (outputTokens[i].Name == "{")
+                {
+                    if (!Increment(ref i)) { return false; }
+
+                    if (OperatorsList(ref i))
+                    {
+                        if (outputTokens[i].Name == "}")
+                        {
+                            if (i < outputTokens.Count - 1)
+                            {
+                                i++;
+                                for (int j = i; j < outputTokens.Count; j++)
+                                {
+                                    errors.Add(" > Error on " + outputTokens[j].Row + " line!\tEnexpected symbol '" + outputTokens[j].Name + "'!");
+                                }
+                                return false;
+                            }
+                            return true;
+                        }
+                        else
+                        {
+                            errors.Add(" > Error on " + outputTokens[i].Row + " line!\tNo closing bracket '}'!");
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        errors.Add(" > Error on " + outputTokens[i].Row + " line!\tUnxpected end of file!");
+                        return false;
+                    }
+                }
+                else
+                {
+                    errors.Add(" > Error on " + outputTokens[i].Row + " line!\tNo open bracket '{'!");
+                    return false;
+                }
+            }
+            else
+            {
+                errors.Add(" > Error on " + outputTokens[i].Row + " line!\tExpected variable list.");
+                return false;
+            }
         }
 
         private bool OperatorsList(ref int i)
@@ -439,11 +445,12 @@ namespace Translator_desktop.SyntaxAnalyse.RecursiveDescentMethod
                 {
                     if (!Increment(ref i)) { return false; }
 
-                    if (Term(ref i))
+                    if (Expression(ref i))
                     {
                         return true;
                     }
                 }
+
                 return true;
             }
             if (outputTokens[i].Name == "-")
@@ -503,7 +510,7 @@ namespace Translator_desktop.SyntaxAnalyse.RecursiveDescentMethod
                 {
                     if (!Increment(ref i)) { return false; }
 
-                    if (Factor(ref i))
+                    if (/*Factor*/Term(ref i))
                     {
                         return true;
                     }

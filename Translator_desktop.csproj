@@ -62,6 +62,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="RPN\Generator\DeijkstraGenerator.cs" />
+    <Compile Include="RPN\Executor\Executor.cs" />
+    <Compile Include="RPN\Generator\IPolishGenerator.cs" />
     <Compile Include="SyntaxAnalyse\PushdownAutomatonMethod\Analyser.cs" />
     <Compile Include="SyntaxAnalyse\OperatorPrecedenceMethod\LinguisticUnitType.cs" />
     <Compile Include="SyntaxAnalyse\OperatorPrecedenceMethod\RelationshipToken.cs" />
@@ -73,11 +76,21 @@
     <Compile Include="SyntaxAnalyse\OperatorPrecedenceMethod\Analyser.cs" />
     <Compile Include="SyntaxAnalyse\PushdownAutomatonMethod\Row.cs" />
     <Compile Include="SyntaxAnalyse\PushdownAutomatonMethod\State.cs" />
+    <Compile Include="SyntaxAnalyse\RecursiveDescentMethod\AnalyserV2.cs" />
+    <Compile Include="Windows\CalculatorWindow.xaml.cs">
+      <DependentUpon>CalculatorWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ConsoleWindow.xaml.cs">
+      <DependentUpon>ConsoleWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\ConTableWindow.xaml.cs">
       <DependentUpon>ConTableWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="LexicalAnalyse\Tables\Token.cs" />
+    <Compile Include="LexicalAnalyse\Token.cs" />
     <Compile Include="LexicalAnalyse\Tables\TokenTable.cs" />
+    <Compile Include="Windows\ExecutorTableWindow.xaml.cs">
+      <DependentUpon>ExecutorTableWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\GrammarTableWindow.xaml.cs">
       <DependentUpon>GrammarTableWindow.xaml</DependentUpon>
     </Compile>
@@ -85,11 +98,17 @@
       <DependentUpon>IdnTableWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="SyntaxAnalyse\RecursiveDescentMethod\Analyser.cs" />
+    <Compile Include="Windows\InputWindow.xaml.cs">
+      <DependentUpon>InputWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\OutputTokenTableWindow.xaml.cs">
       <DependentUpon>OutputTokenTableWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\ParseTableWindow.xaml.cs">
       <DependentUpon>ParseTableWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\PolisWindow.xaml.cs">
+      <DependentUpon>PolisWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\RelationshipsTableWindow.xaml.cs">
       <DependentUpon>RelationshipsTableWindow.xaml</DependentUpon>
@@ -100,6 +119,14 @@
     <Compile Include="Windows\SyntaxAnalyserSettings.xaml.cs">
       <DependentUpon>SyntaxAnalyserSettings.xaml</DependentUpon>
     </Compile>
+    <Page Include="Windows\CalculatorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\ConsoleWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\ConTableWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -120,6 +147,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Windows\ExecutorTableWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\GrammarTableWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -128,11 +159,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Windows\InputWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\OutputTokenTableWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\ParseTableWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\PolisWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

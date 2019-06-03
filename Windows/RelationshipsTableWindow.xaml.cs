@@ -20,33 +20,33 @@ namespace Translator_desktop.Windows
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            var relationships = RelationshipsTable.relationshipsTableBuffer;
+            var relationships = RelationshipsTable.RelationshipsTableBuffer;
 
             var dataTable = new DataTable();
-            dataTable.Columns.Add("---", typeof(string));
+            dataTable.Columns.Add("First\\Second", typeof(string));
 
-            var columns = relationships.Select(rl => rl.FirstLinguisticUnit.Name).Distinct();
-            var rows = relationships.Select(rl => rl.SecondLinguisticUnit.Name).Distinct();
-
-            foreach (string firstLU in columns)
-            {
-                string newFirstLU = $"[{firstLU}]";
-                dataTable.Columns.Add(newFirstLU, typeof(string));
-            }
+            var rows = relationships.Select(rl => rl.FirstLinguisticUnit.Name).Distinct();
+            var columns = relationships.Select(rl => rl.SecondLinguisticUnit.Name).Distinct();
 
             foreach (string secondLU in columns)
+            {
+                string newSecondLU = $"[{secondLU}]";
+                dataTable.Columns.Add(newSecondLU, typeof(string));
+            }
+
+            foreach (string firstLU in rows)
             {
                 DataRow row;
                 row = dataTable.NewRow();
 
                 foreach (var column in dataTable.Columns)
                 {
-                    row[column.ToString()] = column.ToString().Equals("---") 
-                        ? secondLU
+                    row[column.ToString()] = column.ToString().Equals("First\\Second") 
+                        ? firstLU
                         : relationships.FirstOrDefault(
                             rl => 
-                                rl.FirstLinguisticUnit.Name.Equals(column.ToString().Replace("[", string.Empty).Replace("]", string.Empty)) 
-                                && rl.SecondLinguisticUnit.Name.Equals(secondLU)
+                                rl.FirstLinguisticUnit.Name.Equals(firstLU) 
+                                && rl.SecondLinguisticUnit.Name.Equals(column.ToString().Replace("[", string.Empty).Replace("]", string.Empty))
                           )?.Relationship;
                 }
 

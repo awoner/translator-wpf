@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -9,16 +10,23 @@ namespace Translator_desktop.LexicalAnalyse.Tables
     /// </summary>
     static class TokenTable
     {
-        private static string[] tokens = { "double", "float", "int", "for", "if",
-            "cin", "cout", "{", "}", ";", ",", "=", "<<", ">>", "<", ">", "<=",
-            ">=", "==", "!=", "+", "-", "*", "/", "(", ")", "#", "$", "true", "false", "IDN", "CON" };
-        public static IList<Token> Table { get; private set; } = new List<Token>();
+        private static string[] tokens =
+        {
+            "double", "float", "int", "for", "if",
+            "cin", "cout", "{", "}", ";", ",", "=",
+            "<<", ">>", "<", ">", "<=", ">=", "==",
+            "!=", "+", "-", "*", "/", "(", ")", "#",
+            "$", "true", "false", "IDN", "CON"
+        };
+        public static IList<Token> Table { get; private set; }
 
         /// <summary>
         /// Initialization of tables of tokens
         /// </summary>
         public static void InitTable()
         {
+            Table = new List<Token>();
+
             for (int i = 0; i < tokens.Length; i++)
             {
                 if (tokens[i] == "IDN")

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using System;
 
 namespace Translator_desktop.LexicalAnalyse.Tables
 {
@@ -10,8 +11,7 @@ namespace Translator_desktop.LexicalAnalyse.Tables
     static class IdnTable
     {
         private static int code = 1;
-        private static IList<Token> idnTable;
-        public static IList<Token> Table { get => idnTable; }
+        public static IList<Token> Table { get; private set; }
 
         /// <summary>
         /// Return a string representation of the table
@@ -25,9 +25,9 @@ namespace Translator_desktop.LexicalAnalyse.Tables
             str.Append("|   №   |    Name    |    Type    |\n");
             str.Append(separator);
 
-            foreach (Token token in idnTable)
+            foreach (Token token in Table)
             {
-                str.AppendFormat("|{0, 4}   |{1, 8}    |{2, 8}    |\n", token.Code, token.Name, token.Type);
+                str.AppendFormat("|{0, 4}   |{1, 8}    |{2, 8}    |\n", token.Code, token.Name, token.ValueType);
                 str.Append(separator);
             }
 
@@ -39,7 +39,7 @@ namespace Translator_desktop.LexicalAnalyse.Tables
         /// </summary>
         public static void InitTable()
         {
-            idnTable = new List<Token>();
+            Table = new List<Token>();
         }
 
         /// <summary>
@@ -47,9 +47,14 @@ namespace Translator_desktop.LexicalAnalyse.Tables
         /// </summary>
         public static string GetType(string token)
         {
-            string type = idnTable.FirstOrDefault(c => c.Name == token)?.Type;
+            string type = Table.FirstOrDefault(c => c.Name == token)?.ValueType;
 
             return type ?? "undefined";
+        }
+
+        internal static void SetType(string identifierName, string typeName)
+        {
+            Table.First(idn => idn.Name == identifierName).ValueType = typeName;
         }
 
         /// <summary>
@@ -57,7 +62,7 @@ namespace Translator_desktop.LexicalAnalyse.Tables
         /// </summary>
         public static int GetCode(string token)
         {
-            int? code = idnTable.FirstOrDefault(c => c.Name == token)?.Code;
+            int? code = Table.FirstOrDefault(c => c.Name == token)?.Code;
 
             return code ?? 0;
         }
@@ -67,7 +72,39 @@ namespace Translator_desktop.LexicalAnalyse.Tables
         /// </summary>
         public static bool Contains(string identifier)
         {
-            return (idnTable.FirstOrDefault(c => c.Name == identifier) is null) ? false : true;
+            return (Table.FirstOrDefault(c => c.Name == identifier) is null) ? false : true;
+        }
+
+        public static double? GetValue(string identifier)
+        {
+            return Table.FirstOrDefault(idn => idn.Name.Equals(identifier))?.Value;
+        }
+
+        public static void SetValue(string identifierName, double value)
+        {
+            if (Contains(identifierName))
+            {
+                string type = Table.First(idn => idn.Name == identifierName).ValueType;
+                switch (type)
+                {
+                    case "int":
+                        Table.First(idn => idn.Name == identifierName).Value = (int)value;
+                        break;
+                    case "float":
+                        Table.First(idn => idn.Name == identifierName).Value = Math.Round((float)value, 4);
+                        break;
+                    case "double":
+                        Table.First(idn => idn.Name == identifierName).Value = value;
+                        break;
+                    default:
+                        throw new InvalidCastException();
+                }
+                
+            }
+            else
+            {
+                throw new Exception($"Identifier {identifierName} does not exist!");
+            }
         }
 
         /// <summary>
@@ -75,7 +112,13 @@ namespace Translator_desktop.LexicalAnalyse.Tables
         /// </summary>
         public static void Add(string token)
         {
-            idnTable.Add(new Token { Code = code, Name = token, Type = Checker.Type });
+            Table.Add(new Token { Code = code, Name = token, ValueType = Checker.Type });
+            code++;
+        }
+
+        public static void Add(string token, double value)
+        {
+            Table.Add(new Token { Code = code, Name = token, Value = value, ValueType = Checker.Type });
             code++;
         }
     }

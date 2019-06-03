@@ -27,9 +27,9 @@ namespace Translator_desktop.Windows
                 {
                     return pushdownAutomaton.Name;
                 }
-                else if ((bool)recursiveDesedent.IsChecked)
+                else if ((bool)recursiveDescent.IsChecked)
                 {
-                    return recursiveDesedent.Name;
+                    return recursiveDescent.Name;
                 }
                 else if ((bool)operatorPrecedence.IsChecked)
                 {
@@ -45,9 +45,9 @@ namespace Translator_desktop.Windows
             {
                 pushdownAutomaton.IsChecked = true;
             }
-            else if(main.AnalyzeType.Equals("recursiveDesedent"))
+            else if(main.AnalyzeType.Equals("recursiveDescent"))
             {
-                recursiveDesedent.IsChecked = true;
+                recursiveDescent.IsChecked = true;
             }
             else if (main.AnalyzeType.Equals("operatorPrecedence"))
             {
